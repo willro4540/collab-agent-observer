@@ -15,7 +15,9 @@ from pathlib import Path
 
 import pywinctl as pwc
 
-INTERVAL_SECONDS = 60
+import os
+
+INTERVAL_SECONDS = int(os.environ.get("COLLAB_LOGGER_INTERVAL", "60"))
 LOG_PATH = Path(__file__).resolve().parent.parent / "logs" / "window_snapshots.jsonl"
 LOG_PATH.parent.mkdir(exist_ok=True)
 

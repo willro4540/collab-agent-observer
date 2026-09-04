@@ -45,7 +45,13 @@ python src\logger.py
    새까만 이미지만 반환하던 문제(가장 심각, 조용한 실패), `read_log`의 비효율적 전체 파일
    읽기, `logger.py`의 예외 미처리로 인한 조용한 전체 중단 위험 — 전부 수정 후 회귀 없음
    확인.
-3. **실제 MCP stdio 프로토콜 E2E 테스트** (`src/_e2e_client_test.py`, 진짜 `ClientSession`으로
+3. **강제 종료(비정상 종료) 회복력 테스트** — `logger.py`를 3회 연속 시작→(6초 후)
+   `Stop-Process -Force`로 강제 종료→재시작. 결과: 7줄 전부 유효한 JSON, 타임스탬프
+   역행/중복 없음, 재시작마다 문제없이 이어서 기록. "상태 없이 append만 한다"는 단순한
+   설계가 비정상 종료에도 강하다는 것을 실측으로 확인 — 복잡한 인프라를 배제한 게 기능
+   단순함뿐 아니라 회복탄력성에서도 이득이었음. 테스트 편의를 위해 `COLLAB_LOGGER_INTERVAL`
+   환경변수로 주기를 조절 가능하게 만듦(기본값 60초는 그대로).
+4. **실제 MCP stdio 프로토콜 E2E 테스트** (`src/_e2e_client_test.py`, 진짜 `ClientSession`으로
    `initialize`→`list_tools`→`call_tool` 전체 경로 실행) — Claude Code 재시작 없이도 서버가
    프로토콜 레벨에서 완전히 정상 동작함을 확인. 재사용 가능한 회귀 테스트로 남겨둠
    (`python src/_e2e_client_test.py`로 언제든 재실행 가능).
