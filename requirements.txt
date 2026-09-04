@@ -1,0 +1,4 @@
+mcp>=2.0.0
+pywinctl>=0.4.1
+mss>=10.2.0
+Pillow
